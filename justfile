@@ -1,4 +1,4 @@
-permissions := "--allow-read=./ --allow-net=0.0.0.0:8000,status.vatsim.net,data.vatsim.net,api.vatsim.net"
+permissions := "--allow-read=./ --allow-net=0.0.0.0,status.vatsim.net,data.vatsim.net,api.vatsim.net"
 runfile := "main.ts"
 compiled_name := "vatsim_pilot_lookup"
 

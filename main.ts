@@ -11,19 +11,20 @@ import { getOnlinePilots, getPilotInformation } from "./util.ts";
 const { green } = colors;
 
 const HOSTNAME = "0.0.0.0";
-const PORT = 8000;
+const DEFAULT_PORT = 8000;
 
 /**
  * CLI flags.
  */
 export interface CliFlags {
   debug: boolean;
+  port: number;
 }
 
 /**
  * Create the server, its endpoints, and the handlers, and launch.
  */
-async function main(): Promise<void> {
+async function main(port: number): Promise<void> {
   const app = new Application();
   const router = new Router();
   const vatsim = await getVatsimInstance();
@@ -95,8 +96,8 @@ async function main(): Promise<void> {
   // ~~~~~~
   // Launch
   // ~~~~~~
-  app.listen({ hostname: HOSTNAME, port: PORT });
-  log.info(`Listening on ${green(`http://${HOSTNAME}:${PORT}`)}`);
+  app.listen({ hostname: HOSTNAME, port });
+  log.info(`Listening on ${green(`http://${HOSTNAME}:${port}`)}`);
 }
 
 /**
@@ -110,10 +111,14 @@ if (import.meta.main) {
 USAGE:
   server [FLAGS]
 FLAGS:
-    -h, --help      Show this help
-    -d, --debug     Enable debug logging`);
+    -p, --port <port>   Set the port to use
+    -h, --help          Show this help
+    -d, --debug         Enable debug logging`);
   } else {
-    const flags: CliFlags = { debug: args.d || args.debug || false };
+    const flags: CliFlags = {
+      debug: args.d || args.debug || false,
+      port: args.p || args.port || DEFAULT_PORT,
+    };
     await log.setup({
       handlers: {
         console: new log.handlers.ConsoleHandler(
@@ -128,6 +133,6 @@ FLAGS:
         },
       },
     });
-    await main();
+    await main(flags.port);
   }
 }
